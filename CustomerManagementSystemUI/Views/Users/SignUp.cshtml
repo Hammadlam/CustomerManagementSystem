@@ -1,0 +1,139 @@
+﻿@model CustomerManagementSystemUI.UIModels.User
+@{
+    Layout = "~/Views/Shared/AuthUser.cshtml";
+    ViewData["Title"] = "Sign Up";
+}
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden; /* prevent vertical scroll */
+    }
+
+    .signin-section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh; /* full screen height */
+        padding: 20px;
+        background-color: #f8f9fa; /* optional background */
+    }
+
+    .signin-wrapper .form-wrapper {
+        width: 100%;
+        margin-top: -50px;
+    }
+
+</style>
+<section class="signin-section">
+    <div class="container-fluid">
+        <div class="title-wrapper pt-30">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="title">
+                        
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="breadcrumb-wrapper">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a href="#0">Dashboard</a>
+                                </li>
+                                <li class="breadcrumb-item"><a href="#0">Auth</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">
+                                    Sign up
+                                </li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-0 auth-row">
+            <div class="col-lg-6">
+                <div class="auth-cover-wrapper bg-primary-100">
+                    <div class="auth-cover">
+                        <div class="title text-center">
+                            <h1 class="text-primary mb-10">Get Started</h1>
+                            <p class="text-medium">
+                                Start creating the best possible user experience
+                                <br class="d-sm-block" />
+                                for you customers.
+                            </p>
+                        </div>
+                        <div class="cover-image">
+                            <img src="~/images/auth/signin-image.svg" alt="" />
+                        </div>
+                        <div class="shape-image">
+                            <img src="~/images/auth/shape.svg" alt="" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="signup-wrapper">
+                    <div class="form-wrapper">
+                        <h6 class="mb-15">Sign Up Form</h6>
+                        <p class="text-sm mb-25">
+                            Start creating the best possible user experience for you
+                            customers.
+                        </p>
+                        <form asp-action="SignUp" method="post">
+                            @Html.AntiForgeryToken()
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="input-style-1">
+                                        <label asp-for="UserName"></label>
+                                        <input asp-for="UserName" placeholder="Username" />
+                                        <span asp-validation-for="UserName" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="input-style-1">
+                                        <label asp-for="UserEmail"></label>
+                                        <input asp-for="UserEmail" placeholder="Email" />
+                                        <span asp-validation-for="UserEmail" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="input-style-1">
+                                        <label asp-for="Password"></label>
+                                        <input asp-for="Password" type="password" placeholder="Password" />
+                                        <span asp-validation-for="Password" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-check checkbox-style mb-30">
+                                        <input class="form-check-input" type="checkbox" id="terms" required />
+                                        <label class="form-check-label" for="terms">
+                                            I agree to the terms and conditions
+                                        </label>
+                                    </div>
+                                </div>
+                                <div id="loginError" style="color:red;"></div>
+
+                                <div class="col-12">
+                                    <div class="button-group d-flex justify-content-center flex-wrap">
+                                        <button id="btnSignUp" type="submit" class="main-btn primary-btn btn-hover w-100 text-center">
+                                            Sign Up
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="singup-option pt-40">
+                            <p class="text-sm text-medium text-center text-gray">
+                                Already have an account? <a asp-action="SignIn">Sign In</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="~/users_js/Users.js"></script>
