@@ -19,11 +19,13 @@ public partial class User
 
     public DateTime? CreatedAt { get; set; }
 
-    public string? CreatedBy { get; set; }
-
     public DateTime? UpdatedAt { get; set; }
 
     public string? UpdatedBy { get; set; }
+
+    public bool IsAdmin { get; set; }
+
+    public virtual ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
 
     public virtual ICollection<Login> Logins { get; set; } = new List<Login>();
 }

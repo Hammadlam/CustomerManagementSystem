@@ -22,8 +22,25 @@ namespace CustomerManagementSystemAPI.Data.Repository
         public async Task AddUserAsync(User user)
         {
             _context.Users.Add(user);
+
             await _context.SaveChangesAsync();
+            var login = new Login
+            { 
+                FkuserId = user.UserId, 
+                UserEmail = user.UserEmail,
+                Password = user.Password,
+                CreatedAt = DateTime.Now,
+            };
+
+            _context.Logins.Add(login);
+            await _context.SaveChangesAsync();                          
         }
+        public async Task<Login?> GetUserByEmailAndPasswordAsync(string email, string password)
+        {
+            return await _context.Logins
+                .FirstOrDefaultAsync(u => u.UserEmail == email && u.Password == password);
+        }
+ 
         public async Task UpdateUserAsync(User user)
         {
             _context.Users.Update(user);

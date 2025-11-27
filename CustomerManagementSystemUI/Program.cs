@@ -7,13 +7,23 @@ using CustomerManagementSystemUI.Data.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure API base URL
 ApiUtility.Configure(builder.Configuration);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// JWT Authentication configuration
+builder.Services.AddAntiforgery(options => {
+    options.HeaderName = "X-XSRF-TOKEN";
+});
+
+// ✅ Add Session services
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -23,15 +33,16 @@ builder.Services.AddAuthentication(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuer = false,  // agar aap issuer check karna chahte hain to true karen aur issuer define karen
-        ValidateAudience = false, // agar audience check karna hai to true karen
+        ValidateIssuer = false,
+        ValidateAudience = false,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:TokenKey"]))
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:TokenKey"])
+        )
     };
 });
 
-// Register HttpClient with BaseUrl
 builder.Services.AddHttpClient<IUserRepository, UserRepository>(client =>
 {
     client.BaseAddress = new Uri(ApiUtility.BaseUrl);
@@ -50,7 +61,9 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// **Important: Add authentication and authorization middleware**
+// ✅ Add session middleware
+app.UseSession();
+
 app.UseAuthentication();
 app.UseAuthorization();
 

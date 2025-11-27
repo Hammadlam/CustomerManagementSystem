@@ -5,30 +5,40 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using CustomerManagementSystemAPI.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ✅ Register DbContext
 builder.Services.AddDbContext<ManagementSystemDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("CMS")));
 
-// ✅ Register repository
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<TokenGenerator>();
 
-// ✅ JWT Token setup (optional, if you’re using JWT auth)
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    var key = builder.Configuration["Jwt:Key"];
+    var issuer = builder.Configuration["Jwt:Issuer"];
+    var audience = builder.Configuration["Jwt:Audience"];
+
+    options.TokenValidationParameters = new TokenValidationParameters
     {
-        var key = builder.Configuration["JwtSettings:TokenKey"];
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = false,
-            ValidateAudience = false,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
-        };
-    });
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+
+        ValidIssuer = issuer,
+        ValidAudience = audience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+    };
+});
+
 
 builder.Services.AddAuthorization();
 
@@ -46,7 +56,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication(); // Important
+app.UseAuthentication(); 
 app.UseAuthorization();
 
 app.MapControllers();

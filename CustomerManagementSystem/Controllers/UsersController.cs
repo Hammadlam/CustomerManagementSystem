@@ -1,4 +1,5 @@
 ﻿using CustomerManagementSystemAPI.Data.IRepository;
+using CustomerManagementSystemAPI.Helpers;
 using CustomerManagementSystemAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -61,12 +62,42 @@ namespace CustomerManagementSystemAPI.Controllers
         }
 
         // POST: api/users/login-log
+        //[HttpPost("login-log")]
+        //public async Task<IActionResult> AddLogin([FromBody] Login login)
+        //{
+        //    await _userRepository.AddLoginAsync(login);
+        //    return Ok(new { message = "Login record added successfully" });
+        //}
         [HttpPost("login-log")]
-        public async Task<IActionResult> AddLogin([FromBody] Login login)
+        public async Task<IActionResult> AddLogin([FromBody] Login login, [FromServices] TokenGenerator tokenGen)
         {
-            await _userRepository.AddLoginAsync(login);
-            return Ok(new { message = "Login record added successfully" });
-        }
+            if (string.IsNullOrEmpty(login.UserEmail) || string.IsNullOrEmpty(login.Password))
+                return BadRequest(new { message = "Email and password are required" });
+
+            // 🔍 Lookup user from User table based on email + password
+            var matchedLogin = await _userRepository.GetUserByEmailAndPasswordAsync(login.UserEmail, login.Password);
+
+            if (matchedLogin == null)
+                return Unauthorized(new { success = false, message = "Invalid email or password" });
+
+            var token = tokenGen.GenerateJwtToken(login.UserEmail, matchedLogin.FkuserId);
+            // ✅ Match found: set FkUserId internally
+            // login.FkuserId = matchedLogin.LoginId;
+
+            // 👉 Optional: save login record (if needed)
+            // await _userRepository.AddLoginAsync(login);
+
+            return Ok(new
+            {
+                success = true,
+                message = "Login successful",
+                token=token,
+                FkuserId = matchedLogin.FkuserId,
+                LoginId = matchedLogin.LoginId // send this if you want to use later
+            });
+          }
+
+
     }
 
 }

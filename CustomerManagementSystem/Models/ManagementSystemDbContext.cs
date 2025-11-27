@@ -15,6 +15,8 @@ public partial class ManagementSystemDbContext : DbContext
     {
     }
 
+    public virtual DbSet<Attendance> Attendances { get; set; }
+
     public virtual DbSet<Login> Logins { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
@@ -25,6 +27,27 @@ public partial class ManagementSystemDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Attendance>(entity =>
+        {
+            entity.HasKey(e => e.AttendanceId).HasName("PK__Attendan__8B69261C94050FC1");
+
+            entity.ToTable("Attendance");
+
+            entity.Property(e => e.BreakIn).HasColumnType("datetime");
+            entity.Property(e => e.BreakOut).HasColumnType("datetime");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.TimeIn).HasColumnType("datetime");
+            entity.Property(e => e.TimeOut).HasColumnType("datetime");
+            entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
+
+            entity.HasOne(d => d.FkUser).WithMany(p => p.Attendances)
+                .HasForeignKey(d => d.FkUserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Attendance_User");
+        });
+
         modelBuilder.Entity<Login>(entity =>
         {
             entity.HasKey(e => e.LoginId).HasName("PK__Login__4DDA2818FF836E75");
@@ -34,7 +57,6 @@ public partial class ManagementSystemDbContext : DbContext
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
-            entity.Property(e => e.CreatedBy).HasMaxLength(100);
             entity.Property(e => e.FkuserId).HasColumnName("FKUserId");
             entity.Property(e => e.Password).HasMaxLength(255);
             entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
@@ -55,7 +77,6 @@ public partial class ManagementSystemDbContext : DbContext
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
-            entity.Property(e => e.CreatedBy).HasMaxLength(100);
             entity.Property(e => e.ForgetPassword).HasDefaultValue(false);
             entity.Property(e => e.IsActive).HasDefaultValue(false);
             entity.Property(e => e.Password).HasMaxLength(255);

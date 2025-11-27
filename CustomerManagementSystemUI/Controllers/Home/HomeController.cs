@@ -16,5 +16,5 @@ namespace CustomerManagementSystemUI.Controllers.Home
             var users = await _UserRepo.GetAllUsersAsync(token);
             return View(users);
         }
-    }
+    }  
 }

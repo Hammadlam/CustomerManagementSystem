@@ -6,6 +6,7 @@
 
         public static void Configure(IConfiguration configuration)
         {
+            
             BaseUrl = configuration["ApiSettings:BaseUrl"];
         }
     }

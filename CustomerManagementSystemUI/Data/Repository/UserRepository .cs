@@ -21,7 +21,7 @@ namespace CustomerManagementSystemUI.Data.Repository
             var response = await _client.GetAsync("users/AllUsers");
             response.EnsureSuccessStatusCode();
             return JsonConvert.DeserializeObject<List<User>>(await response.Content.ReadAsStringAsync());
-        }
+        } 
 
         public async Task<User> GetUserByIdAsync(int id, string token)
         {
@@ -30,13 +30,15 @@ namespace CustomerManagementSystemUI.Data.Repository
             response.EnsureSuccessStatusCode();
             return JsonConvert.DeserializeObject<User>(await response.Content.ReadAsStringAsync());
         }
-        public async Task<bool> AddUserAsync(User user, string token)
+        public async Task<bool> AddUserAsync(User user)
         {
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
+
             var response = await _client.PostAsync("users/AddUser", content);
+            Console.WriteLine("Calling: " + _client.BaseAddress+ "users/AddUser");
             return response.IsSuccessStatusCode;
         }
+
 
         public async Task<bool> UpdateUserAsync(int id, User user, string token)
         {
