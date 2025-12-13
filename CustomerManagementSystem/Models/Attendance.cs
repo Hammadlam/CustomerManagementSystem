@@ -29,5 +29,7 @@ public partial class Attendance
 
     public int? UpdatedBy { get; set; }
 
+    public DateTime AttendanceDate { get; set; }
+
     public virtual User FkUser { get; set; } = null!;
 }

@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35027.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomerManagementSystemAPI", "CustomerManagementSystem\CustomerManagementSystemAPI.csproj", "{9CF50590-252A-4BBB-8118-BE7D4F9575A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomerManagementSystemAPI", "CustomerManagementSystem\CustomerManagementSystemAPI.csproj", "{9CF50590-252A-4BBB-8118-BE7D4F9575A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomerManagementSystemUI", "CustomerManagementSystemUI\CustomerManagementSystemUI.csproj", "{636AF2F2-328E-4111-8BD1-8E77F065F001}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomerManagementSystemUI", "CustomerManagementSystemUI\CustomerManagementSystemUI.csproj", "{636AF2F2-328E-4111-8BD1-8E77F065F001}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

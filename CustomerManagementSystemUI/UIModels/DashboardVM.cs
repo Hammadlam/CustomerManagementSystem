@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CustomerManagementSystemUI.UIModels;
 
-public class DashboardViewModel
+public class DashboardVM
 {
     public int TotalPresents { get; set; }
     public int TotalAbsents { get; set; }

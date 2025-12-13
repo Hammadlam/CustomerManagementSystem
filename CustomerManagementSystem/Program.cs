@@ -13,6 +13,7 @@ builder.Services.AddDbContext<ManagementSystemDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("CMS")));
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IAttendanceRepository, AttendanceRepository>();
 builder.Services.AddScoped<TokenGenerator>();
 
 builder.Services.AddAuthentication(options =>
