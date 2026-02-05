@@ -1,5 +1,6 @@
 ﻿using CustomerManagementSystemAPI.Data.IRepository;
 using CustomerManagementSystemAPI.Models;
+using CustomerManagementSystemAPI.Models.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,12 +15,25 @@ namespace CustomerManagementSystemAPI.Data.Repository
             _context = context;
         }
         #region Get All Attendance
-        public async Task<IEnumerable<Attendance>> GetAllAttendanceAsync()
+        public async Task<IEnumerable<AttendanceDto>> GetAllAttendanceAsync()
         {
             return await _context.Attendances
-                .Include(u => u.FkUser)
+                .Select(a => new AttendanceDto
+                {
+                    AttendanceId = a.AttendanceId,
+                    FkUserId = a.FkUserId,
+                    Present = a.Present,
+                    Absent = a.Absent,
+                    TimeIn = a.TimeIn,
+                    BreakIn = a.BreakIn,
+                    BreakOut = a.BreakOut,
+                    TimeOut = a.TimeOut,
+                    IsManual = a.IsManual,
+                    AttendanceDate = a.AttendanceDate
+                })
                 .ToListAsync();
         }
+
         #endregion
 
         #region Get Emp Attendance By Id 
@@ -31,38 +45,59 @@ namespace CustomerManagementSystemAPI.Data.Repository
         #endregion
 
         #region Add New Attendance
-        public async Task<bool> AddAttendanceAsync(Attendance attendance)
+        public async Task<OperationResult> AddAttendanceAsync(Attendance attendance)
         {
-            // If AttendanceDate is not provided (Normal User)
+            var userExists = await _context.Users
+                .AnyAsync(u => u.UserId == attendance.FkUserId);
+
+            if (!userExists)
+                return OperationResult.Fail("Invalid UserId. User does not exist.");
+
             if (attendance.AttendanceDate == default)
                 attendance.AttendanceDate = DateTime.UtcNow.Date;
 
             attendance.CreatedAt = DateTime.UtcNow;
 
-            await _context.Attendances.AddAsync(attendance);
-            return await _context.SaveChangesAsync() > 0;
+            try
+            {
+                await _context.Attendances.AddAsync(attendance);
+                await _context.SaveChangesAsync();
+                return OperationResult.Ok();
+            }
+            catch (DbUpdateException)
+            {
+                return OperationResult.Fail("Failed to save attendance. Please try again.");
+            }
         }
+
 
         #endregion
 
         #region  UPDATE ATTENDANCE
-        public async Task<bool> UpdateAttendanceAsync(Attendance attendance)
+        public async Task<bool> UpdateAttendanceAsync(AttendanceDto dto)
         {
             var existing = await _context.Attendances
-                .FirstOrDefaultAsync(x => x.AttendanceId == attendance.AttendanceId);
+                .FirstOrDefaultAsync(x => x.AttendanceId == dto.AttendanceId);
 
             if (existing == null)
                 return false;
 
-            attendance.UpdatedAt = DateTime.UtcNow;
+            // Update only allowed fields
+            existing.Present = dto.Present;
+            //existing.Absent = dto.Absent;
+            existing.Absent = !dto.Present;
+            existing.TimeIn = dto.TimeIn;
+            existing.BreakIn = dto.BreakIn;
+            existing.BreakOut = dto.BreakOut;
+            existing.TimeOut = dto.TimeOut;
+            existing.IsManual = dto.IsManual;
 
-            _context.Entry(existing).CurrentValues.SetValues(attendance);
-
-            // Ensure CreatedAt is never overwritten
-            _context.Entry(existing).Property(x => x.CreatedAt).IsModified = false;
+            existing.UpdatedAt = DateTime.UtcNow;
+            existing.UpdatedBy = dto.UpdatedBy;
 
             return await _context.SaveChangesAsync() > 0;
         }
+
 
 
         #endregion

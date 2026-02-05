@@ -1,5 +1,6 @@
 ﻿using CustomerManagementSystemAPI.Data.IRepository;
 using CustomerManagementSystemAPI.Models;
+using CustomerManagementSystemAPI.Models.DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -38,30 +39,47 @@ namespace CustomerManagementSystemAPI.Controllers
 
         #region Add new attendance
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] Attendance attendance)
+        public async Task<IActionResult> Add([FromBody] AttendanceDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            var attendance = new Attendance
+            {
+                FkUserId = dto.FkUserId,
+                Present = dto.Present,
+                Absent = dto.Absent,
+                TimeIn = dto.TimeIn,
+                BreakIn = dto.BreakIn,
+                BreakOut = dto.BreakOut,
+                TimeOut = dto.TimeOut,
+                IsManual = dto.IsManual,
+                AttendanceDate = dto.AttendanceDate ?? DateTime.UtcNow.Date
+            };
+
             var result = await _attendanceRepository.AddAttendanceAsync(attendance);
 
-            return result ? Ok("Attendance added successfully.") :
-                            BadRequest("Failed to add attendance.");
+            return result.Success
+                ? Ok("Attendance added successfully.")
+                : BadRequest(result.Error);
         }
         #endregion
 
         #region Update existing attendance
         [HttpPut]
-        public async Task<IActionResult> Update([FromBody] Attendance attendance)
+        public async Task<IActionResult> Update([FromBody] AttendanceDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _attendanceRepository.UpdateAttendanceAsync(attendance);
+            var updated = await _attendanceRepository.UpdateAttendanceAsync(dto);
 
-            return result ? Ok("Attendance updated successfully.") :
-                            NotFound("Attendance record not found.");
+            if (!updated)
+                return NotFound(new { message = "Attendance record not found" });
+
+            return Ok(new { message = "Attendance updated successfully" });
         }
+
 
         #endregion
 

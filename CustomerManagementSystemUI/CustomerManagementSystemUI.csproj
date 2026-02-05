@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -7,7 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\Users_js\Users.js" />
+    <None Include="wwwroot\js\ui_js\EmployeeAttendance.js" />
+    <None Include="wwwroot\js\ui_js\Home.js" />
+    <None Include="wwwroot\js\ui_js\Users.js" />
   </ItemGroup>
 
   <ItemGroup>

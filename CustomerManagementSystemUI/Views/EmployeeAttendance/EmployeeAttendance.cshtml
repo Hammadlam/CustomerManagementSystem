@@ -41,10 +41,12 @@
                 <input type="datetime-local" asp-for="TimeOut" class="form-control" />
             </div>
 
-             <div class="col-md-4 mb-3">
+            <div class="col-md-4 mb-3">
                 <label class="form-label">Attendance Status</label>
-                <input type="checkbox" asp-for="Present" /> Present
-                <input type="checkbox" asp-for="Absent" /> Absent
+                <div class="pt-2">
+                    <input type="checkbox" asp-for="Present" /> <span class="me-3">Present</span>
+                    <input type="checkbox" asp-for="Absent" /> <span>Absent</span>
+                </div>
             </div>
         </div>
 
@@ -59,5 +61,34 @@
         <!-- Submit -->
         <button type="submit" class="btn btn-primary">Save Attendance</button>
     </form>
+    <hr class="my-4" />
 
+<div class="card">
+    <div class="card-header bg-primary text-white">
+        Attendance List
+    </div>
+    <div class="card-body">
+        <table id="tblAttendance" class="table table-bordered table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Employee Name</th>
+                    <th>Time In</th>
+                    <th>Time Out</th>
+                    <th>Break In</th>
+                    <th>Break Out</th>
+                    <th>Status</th> <th>Manual</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                </tbody>
+        </table>
+    </div>
 </div>
+</div>
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <link rel="stylesheet" href="//cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+    <script src="//cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="~/js/ui_js/EmployeeAttendance.js/"></script>
+}

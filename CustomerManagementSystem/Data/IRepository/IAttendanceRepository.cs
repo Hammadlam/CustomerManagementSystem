@@ -1,13 +1,16 @@
 ﻿using CustomerManagementSystemAPI.Models;
+using CustomerManagementSystemAPI.Models.DTO;
 
 namespace CustomerManagementSystemAPI.Data.IRepository
 {
     public interface IAttendanceRepository
     {
-        Task<IEnumerable<Attendance>> GetAllAttendanceAsync();
+        Task<IEnumerable<AttendanceDto>> GetAllAttendanceAsync();
         Task<Attendance?> GetAttendanceByIdAsync(int id);
-        Task<bool> AddAttendanceAsync(Attendance attendance);
-        Task<bool> UpdateAttendanceAsync(Attendance attendance);
+        Task<OperationResult> AddAttendanceAsync(Attendance attendance);
+
+        Task<bool> UpdateAttendanceAsync(AttendanceDto dto);
+
         Task<bool> DeleteAttendanceAsync(int id);
 
         // For dropdown users list
