@@ -15,7 +15,6 @@ builder.Services.AddAntiforgery(options => {
     options.HeaderName = "X-XSRF-TOKEN";
 });
 
-// ✅ Add Session services
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -60,8 +59,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
-// ✅ Add session middleware
 app.UseSession();
 
 app.UseAuthentication();

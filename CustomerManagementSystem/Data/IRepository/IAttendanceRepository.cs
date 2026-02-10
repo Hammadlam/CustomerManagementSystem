@@ -14,7 +14,7 @@ namespace CustomerManagementSystemAPI.Data.IRepository
         Task<bool> DeleteAttendanceAsync(int id);
 
         // For dropdown users list
-        Task<IEnumerable<User>> GetAllUsersAsync();
+        Task<List<UserDropdownDto>> GetAllUsersAsync();
     }
 
 }

@@ -17,7 +17,7 @@ namespace CustomerManagementSystemAPI.Controllers
             _attendanceRepository = attendanceRepository;
         }
         #region  Get All Attendance
-        [HttpGet]
+        [HttpGet("GetAllAttendance")]
         public async Task<IActionResult> GetAll()
         {
             var data = await _attendanceRepository.GetAllAttendanceAsync();

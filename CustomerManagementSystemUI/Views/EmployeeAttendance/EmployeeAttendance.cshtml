@@ -1,4 +1,4 @@
-﻿@model CustomerManagementSystemUI.UIModels.AttendanceVM
+﻿@model CustomerManagementSystemUI.UIModels.DTO.AttendanceDto
 @{
     Layout = "_Layout";
     ViewData["Title"] = "EmployeeAttendance";
@@ -12,7 +12,7 @@
         <div class="row">
             <div class="col-md-4 mb-3">
                 <label class="form-label">Select Employee</label>
-                <select class="form-select" asp-for="FkUserId" required>
+                <select class="form-select" asp-for="FkUserId" id="ddlEmployees" required>
                     <option value="">-- Select Employee --</option>
                 </select>
             </div>
@@ -90,5 +90,5 @@
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <link rel="stylesheet" href="//cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
     <script src="//cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="~/js/ui_js/EmployeeAttendance.js/"></script>
+    <script src="~/js/ui_js/EmployeeAttendance.js"></script>
 }

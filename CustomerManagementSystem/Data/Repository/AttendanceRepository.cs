@@ -118,10 +118,22 @@ namespace CustomerManagementSystemAPI.Data.Repository
         #endregion
 
         #region GET ALL USERS (FOR DROPDOWN)
-        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        //public async Task<IEnumerable<User>> GetAllUsersAsync()
+        //{
+        //    return await _context.Users.ToListAsync();
+        //}
+        public async Task<List<UserDropdownDto>> GetAllUsersAsync()
         {
-            return await _context.Users.ToListAsync();
+            return await _context.Users
+                .Where(x => x.IsActive == true)
+                .Select(x => new UserDropdownDto
+                {
+                    UserId = x.UserId,
+                    FullName = x.UserName
+                })
+                .ToListAsync();
         }
+
         #endregion
     }
 }
