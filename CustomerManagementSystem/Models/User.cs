@@ -25,7 +25,13 @@ public partial class User
 
     public bool IsAdmin { get; set; }
 
+    public int? FkClientId { get; set; }
+
     public virtual ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
 
+    public virtual Client? FkClient { get; set; }
+
     public virtual ICollection<Login> Logins { get; set; } = new List<Login>();
+
+    public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 }

@@ -7,7 +7,8 @@
 <div class="container mt-4">
     <h3 class="mb-3">Employee Attendance</h3>
 
-    <form method="post">
+    <form id="attendanceForm">
+
         <!-- Row 1 -->
         <div class="row">
             <div class="col-md-4 mb-3">
@@ -71,13 +72,15 @@
         <table id="tblAttendance" class="table table-bordered table-striped" style="width:100%">
             <thead>
                 <tr>
-                    <th>Employee Name</th>
-                    <th>Time In</th>
-                    <th>Time Out</th>
-                    <th>Break In</th>
-                    <th>Break Out</th>
-                    <th>Status</th> <th>Manual</th>
-                    <th>Action</th>
+                        <th style="text-align:center;">ID</th>
+                        <th style="text-align:center;">Employee Name</th>
+                        <th style="text-align:center;">Attendance Date</th>
+                        <th style="text-align:center;">Time In</th>
+                        <th style="text-align:center;">Break In</th>
+                        <th style="text-align:center;">Break Out</th>
+                        <th style="text-align:center;">Time Out</th>
+                        @* <th>Status</th> *@ 
+                        <th style="text-align:center;">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -90,5 +93,8 @@
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <link rel="stylesheet" href="//cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
     <script src="//cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+
     <script src="~/js/ui_js/EmployeeAttendance.js"></script>
 }

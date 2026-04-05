@@ -29,16 +29,17 @@ namespace CustomerManagementSystemAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var data = await _attendanceRepository.GetAttendanceByIdAsync(id);
-            if (data == null)
-                return NotFound("Attendance record not found.");
+            var result = await _attendanceRepository.GetAttendanceByIdAsync(id);
 
-            return Ok(data);
+            if (result == null || !result.Any())
+                return NotFound();
+
+            return Ok(result);
         }
         #endregion
 
         #region Add new attendance
-        [HttpPost]
+        [HttpPost("AddAttendance")]
         public async Task<IActionResult> Add([FromBody] AttendanceDto dto)
         {
             if (!ModelState.IsValid)
@@ -66,7 +67,7 @@ namespace CustomerManagementSystemAPI.Controllers
         #endregion
 
         #region Update existing attendance
-        [HttpPut]
+        [HttpPut("UpdateAttendance")]
         public async Task<IActionResult> Update([FromBody] AttendanceDto dto)
         {
             if (!ModelState.IsValid)
@@ -84,7 +85,7 @@ namespace CustomerManagementSystemAPI.Controllers
         #endregion
 
         #region Delete attendance record
-        [HttpDelete("{id}")]
+        [HttpDelete("Delete")]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _attendanceRepository.DeleteAttendanceAsync(id);

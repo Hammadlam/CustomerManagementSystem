@@ -74,32 +74,56 @@ namespace CustomerManagementSystemUI.Controllers.Users
         public async Task<IActionResult> AddUser([FromBody] User user)
         {
             if (!ModelState.IsValid)
-                return BadRequest(new { message = "Invalid user data" });
+            {
+                // Collect first error message for clarity
+                var firstError = ModelState.Values.SelectMany(v => v.Errors)
+                                                  .FirstOrDefault()?.ErrorMessage ?? "Invalid user data";
+                return BadRequest(new { success = false, message = firstError });
+            }
 
             try
             {
-                using (var client = new HttpClient())
+                using var client = new HttpClient();
+
+                var json = JsonConvert.SerializeObject(user);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await client.PostAsync($"{ApiUtility.BaseUrl}users/AddUser", content);
+                var responseString = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
                 {
-                    var json = JsonConvert.SerializeObject(user);
-                    var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-                    var response = await client.PostAsync($"{ApiUtility.BaseUrl}users/AddUser", content);
-                    var responseString = await response.Content.ReadAsStringAsync();
-
-                    if (response.IsSuccessStatusCode)
+                    return Json(new
                     {
-                        return Json(new { success = true, message = "User created successfully", redirectUrl = Url.Action("SignIn", "Users") });
-                    }
-                    else
+                        success = true,
+                        message = "User created successfully",
+                        redirectUrl = Url.Action("SignIn", "Users")
+                    });
+                }
+                else
+                {
+                    // Try to read message from API, fallback to generic
+                    string apiMessage;
+                    try
                     {
                         var error = JsonConvert.DeserializeObject<dynamic>(responseString);
-                        return BadRequest(new { success = false, message = error?.message ?? "Failed to add user" });
+                        apiMessage = error?.message ?? "Failed to add user";
                     }
+                    catch
+                    {
+                        apiMessage = "Failed to add user";
+                    }
+
+                    return BadRequest(new { success = false, message = apiMessage });
                 }
             }
-            catch (Exception ex)
+            catch (HttpRequestException)
             {
-                return BadRequest(new { success = false, message = "Error: " + ex.Message });
+                return BadRequest(new { success = false, message = "Unable to reach server. Please try again later." });
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { success = false, message = "Something went wrong. Please try again." });
             }
         }
 

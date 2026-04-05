@@ -17,11 +17,12 @@ namespace CustomerManagementSystemAPI.Data.Repository
         #region Get All Attendance
         public async Task<IEnumerable<AttendanceDto>> GetAllAttendanceAsync()
         {
-            return await _context.Attendances
+            var attendance= await _context.Attendances
                 .Select(a => new AttendanceDto
                 {
                     AttendanceId = a.AttendanceId,
                     FkUserId = a.FkUserId,
+                    UserName = a.FkUser.UserName,
                     Present = a.Present,
                     Absent = a.Absent,
                     TimeIn = a.TimeIn,
@@ -32,15 +33,33 @@ namespace CustomerManagementSystemAPI.Data.Repository
                     AttendanceDate = a.AttendanceDate
                 })
                 .ToListAsync();
+            return attendance;
         }
 
         #endregion
 
         #region Get Emp Attendance By Id 
-        public async Task<Attendance?> GetAttendanceByIdAsync(int id)
+        public async Task<List<AttendanceDto>> GetAttendanceByIdAsync(int id)
         {
-            return await _context.Attendances
-                .FirstOrDefaultAsync(x => x.AttendanceId == id);
+            var result = await _context.Attendances
+               .Where(a => a.FkUserId == id)
+               .Select(a => new AttendanceDto
+               {
+                   AttendanceId = a.AttendanceId,
+                   FkUserId = a.FkUserId,
+                   UserName = a.FkUser.UserName,
+                   Present = a.Present,
+                   Absent = a.Absent,
+                   TimeIn = a.TimeIn,
+                   BreakIn = a.BreakIn,
+                   BreakOut = a.BreakOut,
+                   TimeOut = a.TimeOut,
+                   IsManual = a.IsManual,
+                   AttendanceDate = a.AttendanceDate
+               })
+               .ToListAsync();
+
+            return result;
         }
         #endregion
 
@@ -57,7 +76,7 @@ namespace CustomerManagementSystemAPI.Data.Repository
                 attendance.AttendanceDate = DateTime.UtcNow.Date;
 
             attendance.CreatedAt = DateTime.UtcNow;
-
+            //attendance.CreatedAt = DateTime.Now;
             try
             {
                 await _context.Attendances.AddAsync(attendance);
@@ -124,7 +143,7 @@ namespace CustomerManagementSystemAPI.Data.Repository
         //}
         public async Task<List<UserDropdownDto>> GetAllUsersAsync()
         {
-            return await _context.Users
+                var result = await _context.Users
                 .Where(x => x.IsActive == true)
                 .Select(x => new UserDropdownDto
                 {
@@ -132,6 +151,7 @@ namespace CustomerManagementSystemAPI.Data.Repository
                     FullName = x.UserName
                 })
                 .ToListAsync();
+            return result;
         }
 
         #endregion

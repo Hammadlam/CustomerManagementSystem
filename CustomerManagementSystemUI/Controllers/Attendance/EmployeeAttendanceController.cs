@@ -40,7 +40,7 @@ namespace CustomerManagementSystemUI.Controllers.Attendance
                     PropertyNameCaseInsensitive = true
                 });
 
-            return Json(data); 
+            return Json(data);
         }
 
         #endregion
@@ -65,9 +65,35 @@ namespace CustomerManagementSystemUI.Controllers.Attendance
         }
         #endregion
 
+        #region GetAttendanceByID
+        [HttpGet]
+        public async Task<IActionResult> GetAttendanceByEmployeeId(int id)
+        {
+            using var client = new HttpClient();
+
+            var response = await client.GetAsync($"{ApiUtility.BaseUrl}Attendance/{id}");
+
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return Json(new { success = false, message = responseString });
+            }
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            var attendance = JsonSerializer.Deserialize<List<AttendanceDto>>(responseString, options);
+
+            return Json(attendance);
+        }
+        #endregion
+
         #region AddAttendance
         [HttpPost]
-        public async Task<IActionResult> AddAttendance(AttendanceDto dto)
+        public async Task<IActionResult> AddAttendance([FromBody] AttendanceDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -78,7 +104,7 @@ namespace CustomerManagementSystemUI.Controllers.Attendance
                 "application/json"
             );
 
-            var response = await _httpClient.PostAsync($"{ApiUtility.BaseUrl}Attendance/Add", content);
+            var response = await _httpClient.PostAsync($"{ApiUtility.BaseUrl}Attendance/AddAttendance", content);
 
             if (!response.IsSuccessStatusCode)
                 return BadRequest(await response.Content.ReadAsStringAsync());
@@ -89,31 +115,30 @@ namespace CustomerManagementSystemUI.Controllers.Attendance
 
         #region UpdateAttendance
         [HttpPut]
-        public async Task<IActionResult> UpdateAttendance(AttendanceDto dto)
+        public async Task<IActionResult> UpdateAttendance([FromBody] AttendanceDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var content = new StringContent(
-                JsonSerializer.Serialize(dto),
-                Encoding.UTF8,
-                "application/json"
-            );
 
-            var response = await _httpClient.PutAsync($"{ApiUtility.BaseUrl}Attendance/Update", content);
 
+            //var response = await _httpClient.PutAsync($"{ApiUtility.BaseUrl}Attendance/UpdateAttendance", dto);
+            var response = await _httpClient.PutAsJsonAsync($"{ApiUtility.BaseUrl}Attendance/UpdateAttendance",dto);
             if (!response.IsSuccessStatusCode)
                 return NotFound("Attendance record not found");
 
-            return Ok(new { message = "Attendance updated successfully" });
+            return Ok("Attendance updated successfully");
         }
+
+
+
         #endregion
 
         #region DeleteAttendance
-        [HttpDelete("{id}")]
+        [HttpDelete]
         public async Task<IActionResult> DeleteAttendance(int id)
         {
-            var response = await _httpClient.DeleteAsync($"{ApiUtility.BaseUrl}Attendance/Delete?{id}");
+            var response = await _httpClient.DeleteAsync($"{ApiUtility.BaseUrl}Attendance/Delete?id={id}");
 
             if (!response.IsSuccessStatusCode)
                 return NotFound("Attendance record not found");

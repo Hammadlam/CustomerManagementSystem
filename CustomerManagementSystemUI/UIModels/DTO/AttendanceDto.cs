@@ -4,6 +4,7 @@
     {
         public int AttendanceId { get; set; }
         public int FkUserId { get; set; }
+        public string? UserName { get; set; }
         public bool Present { get; set; }
         public bool Absent { get; set; }
         public DateTime? TimeIn { get; set; }

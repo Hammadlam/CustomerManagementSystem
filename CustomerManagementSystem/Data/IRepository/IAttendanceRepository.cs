@@ -6,7 +6,7 @@ namespace CustomerManagementSystemAPI.Data.IRepository
     public interface IAttendanceRepository
     {
         Task<IEnumerable<AttendanceDto>> GetAllAttendanceAsync();
-        Task<Attendance?> GetAttendanceByIdAsync(int id);
+        Task<List<AttendanceDto>> GetAttendanceByIdAsync(int id);
         Task<OperationResult> AddAttendanceAsync(Attendance attendance);
 
         Task<bool> UpdateAttendanceAsync(AttendanceDto dto);
