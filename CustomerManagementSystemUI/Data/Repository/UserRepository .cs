@@ -54,5 +54,15 @@ namespace CustomerManagementSystemUI.Data.Repository
             var response = await _client.DeleteAsync($"users/Delete/{id}");
             return response.IsSuccessStatusCode;
         }
+
+        public async Task<string> GetDashboardAsync(string token)
+        {
+            _client.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", token);
+
+            var response = await _client.GetAsync("admin/dashboard");
+
+            return await response.Content.ReadAsStringAsync();
+        }
     }
 }

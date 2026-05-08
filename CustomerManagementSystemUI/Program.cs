@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using CustomerManagementSystemUI.Data.APIUtility;
+using CustomerManagementSystemUI.Data.IRepository;
+using CustomerManagementSystemUI.Data.JWT_Handler;
+using CustomerManagementSystemUI.Data.Repository;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using CustomerManagementSystemUI.Data.APIUtility;
-using CustomerManagementSystemUI.Data.IRepository;
-using CustomerManagementSystemUI.Data.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,10 +43,29 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<JwtHandler>();
+
 builder.Services.AddHttpClient<IUserRepository, UserRepository>(client =>
 {
     client.BaseAddress = new Uri(ApiUtility.BaseUrl);
-});
+}).AddHttpMessageHandler<JwtHandler>();
+//builder.Services.AddHttpClient("API", client =>
+//{
+//    client.BaseAddress = new Uri(ApiUtility.BaseUrl);
+//    client.Timeout = TimeSpan.FromSeconds(60);
+//})
+//.AddHttpMessageHandler<JwtHandler>();
+
+// ---------------- API SERVICE ----------------
+builder.Services.AddScoped<ApiService>();
+
+// ---------------- REPOSITORIES ----------------
+builder.Services.AddScoped<ISuperAdminRepository, SuperAdminRepository>();
+builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+
 
 var app = builder.Build();
 

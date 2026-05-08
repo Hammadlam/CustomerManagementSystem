@@ -28,7 +28,13 @@ public partial class ManagementSystemDbContext : DbContext
     public virtual DbSet<UserRole> UserRoles { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-   => optionsBuilder.UseSqlServer("Data Source=DESKTOP-F9IN2P4;Initial Catalog=CustomerManagementSystem;Integrated Security=True;Trust Server Certificate=True");
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            // appsettings.json se connection string aayegi
+        }
+    }
+    //=> optionsBuilder.UseSqlServer("Data Source=localhost;Initial Catalog=CustomerManagementSystem;Integrated Security=True;Trust Server Certificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

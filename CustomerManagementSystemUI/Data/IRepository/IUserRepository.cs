@@ -9,6 +9,7 @@ namespace CustomerManagementSystemUI.Data.IRepository
         Task<bool> AddUserAsync(User user);
         Task<bool> UpdateUserAsync(int id, User user, string token);
         Task<bool> DeleteUserAsync(int id, string token);
+
     }
 
 }

@@ -26,49 +26,119 @@ namespace CustomerManagementSystemUI.Controllers.Users
         {
             return View();
         }
+        #region Commented SignIn Method
+        //[AllowAnonymous]
+        //[HttpPost]
+        //public async Task<IActionResult> SignIn(Login loginVM)
+        // {
+        //    try
+        //    {
+        //        var client = new HttpClient();
+        //        var content = new StringContent(JsonConvert.SerializeObject(loginVM), Encoding.UTF8, "application/json");
+
+        //        var response = await client.PostAsync($"{ApiUtility.BaseUrl}users/login-log", content);
+
+        //        var responseContent = await response.Content.ReadAsStringAsync();
+
+        //        if (response.IsSuccessStatusCode)
+        //        {
+        //            var result = JsonConvert.DeserializeObject<LoginResponse>(responseContent);
+        //            if (result != null && result.success)
+        //            {
+        //                string token = result.token;
+        //                HttpContext.Session.SetString("JWToken", token);
+
+        //                return Json(new
+        //                {
+        //                    success = true,
+        //                    message = "Login Successfull",
+        //                    redirectUrl = Url.Action("Home", "Home")
+        //                });
+        //            }
+        //            return Json(new { success = false, message = "Invalid login" });
+        //        }
+        //        else
+        //        {
+        //            // API returned error JSON
+        //            var errorResult = JsonConvert.DeserializeObject<dynamic>(responseContent);
+        //            return Json(new { success = false, message = (string)(errorResult?.message ?? "Login failed") });
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Catch server-side errors
+        //        return Json(new { success = false, message = "Internal Error: " + ex.Message });
+        //    }
+        //}
+        #endregion
+
         [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> SignIn(Login loginVM)
-         {
+        {
             try
             {
                 var client = new HttpClient();
-                var content = new StringContent(JsonConvert.SerializeObject(loginVM), Encoding.UTF8, "application/json");
+                var content = new StringContent(
+                    JsonConvert.SerializeObject(loginVM),
+                    Encoding.UTF8,
+                    "application/json"
+                );
 
-                var response = await client.PostAsync($"{ApiUtility.BaseUrl}users/login-log", content);
+                var response = await client.PostAsync(
+                    $"{ApiUtility.BaseUrl}users/login-log", content
+                );
 
                 var responseContent = await response.Content.ReadAsStringAsync();
 
                 if (response.IsSuccessStatusCode)
                 {
                     var result = JsonConvert.DeserializeObject<LoginResponse>(responseContent);
+
                     if (result != null && result.success)
                     {
-                        string token = result.token;
-                        HttpContext.Session.SetString("JWToken", token);
+                        // ── Session save ────────────────────────────
+                        HttpContext.Session.SetString("JWToken", result.token);
+                        HttpContext.Session.SetInt32("UserId", result.userId);
+                        HttpContext.Session.SetString("Roles",
+                            JsonConvert.SerializeObject(result.roles));
+
+                        // ── Role ke hisaab se redirect ──────────────
+                        string redirectUrl;
+
+                        if (result.roles.Contains("SuperAdmin"))
+                            redirectUrl = Url.Action("SuperAdmin", "Dashboard");
+                        else if (result.roles.Contains("Admin"))
+                            redirectUrl = Url.Action("Admin", "Dashboard");
+                        else
+                            redirectUrl = Url.Action("Index", "Home");
 
                         return Json(new
                         {
                             success = true,
-                            message = "Login Successfull",
-                            redirectUrl = Url.Action("Home", "Home")
+                            message = "Login Successful",
+                            redirectUrl = redirectUrl
                         });
                     }
+
                     return Json(new { success = false, message = "Invalid login" });
                 }
                 else
                 {
-                    // API returned error JSON
                     var errorResult = JsonConvert.DeserializeObject<dynamic>(responseContent);
-                    return Json(new { success = false, message = (string)(errorResult?.message ?? "Login failed") });
+                    return Json(new
+                    {
+                        success = false,
+                        message = (string)(errorResult?.message ?? "Login failed")
+                    });
                 }
             }
             catch (Exception ex)
             {
-                // Catch server-side errors
                 return Json(new { success = false, message = "Internal Error: " + ex.Message });
             }
         }
+
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> AddUser([FromBody] User user)

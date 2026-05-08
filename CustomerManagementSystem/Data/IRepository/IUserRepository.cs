@@ -7,7 +7,9 @@ namespace CustomerManagementSystemAPI.Data.IRepository
         Task<IEnumerable<User>> GetAllUsersAsync();
         Task<User> GetUserByIdAsync(int id);
         Task AddUserAsync(User user);
-        Task<Login?> GetUserByEmailAndPasswordAsync(string email, string password);
+        //Task<Login?> GetUserByEmailAndPasswordAsync(string email, string password);
+        Task<User?> GetUserWithRolesAsync(string email, string password);
+
         Task UpdateUserAsync(User user);
         Task DeleteUserAsync(int id);
 

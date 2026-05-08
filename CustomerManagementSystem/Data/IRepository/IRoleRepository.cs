@@ -5,7 +5,7 @@ namespace CustomerManagementSystemAPI.Data.IRepository
 {
     public interface IRoleRepository
     {
-        Task<IEnumerable<Role>> GetAllAsync();
+        Task<IEnumerable<RoleDto>> GetAllAsync();
     }
 
 }

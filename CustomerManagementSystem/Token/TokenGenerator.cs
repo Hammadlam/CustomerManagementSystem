@@ -14,28 +14,42 @@ namespace CustomerManagementSystemAPI.Helpers
             _config = config;
         }
 
-        public string GenerateJwtToken(string email, int? userId)
+        public string GenerateJwtToken(string email, int? userId, List<string>roles)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            try
+            {
 
-            var claims = new List<Claim>
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+                var claims = new List<Claim>
     {
-        new Claim(ClaimTypes.Name, email)
+        new Claim(ClaimTypes.Name, email),
+        new Claim(ClaimTypes.NameIdentifier, userId.ToString())
     };
 
-            if (userId.HasValue)
-                claims.Add(new Claim("UserId", userId.Value.ToString()));
+                if (userId.HasValue)
+                    claims.Add(new Claim("UserId", userId.Value.ToString()));
 
-            var token = new JwtSecurityToken(
-                issuer: _config["Jwt:Issuer"],
-                audience: _config["Jwt:Audience"],
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(Convert.ToInt32(_config["Jwt:ExpiresInMinutes"])),
-                signingCredentials: creds
-            );
+                foreach (var role in roles)
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, role));
+                }
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+                var token = new JwtSecurityToken(
+                    issuer: _config["Jwt:Issuer"],
+                    audience: _config["Jwt:Audience"],
+                    claims: claims,
+                    expires: DateTime.Now.AddMinutes(Convert.ToInt32(_config["Jwt:ExpiresInMinutes"])),
+                    signingCredentials: creds
+                );
+
+                return new JwtSecurityTokenHandler().WriteToken(token);
+            }
+
+            catch (Exception ex) {
+                return "Error";
+            }
         }
 
     }

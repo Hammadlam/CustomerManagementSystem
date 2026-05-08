@@ -12,19 +12,23 @@ namespace CustomerManagementSystemAPI.Data.Repository
         {
             _context = context;
         }
-        public async Task<IEnumerable<UserRoleDto>> GetAllAsync() =>
-         await _context.UserRoles
-             .Include(ur => ur.FkUser).ThenInclude(u => u.FkClient)
-             .Include(ur => ur.FkRole)
-             .Select(ur => new UserRoleDto
-             {
-                 UserRoleId = ur.UserRoleId,
-                 FkUserId = ur.FkUserId,
-                 UserName = ur.FkUser.UserName,
-                 UserEmail = ur.FkUser.UserEmail,
-                 FkRoleId = ur.FkRoleId,
-                 RoleName = ur.FkRole.RoleName
-             }).ToListAsync();
+        public async Task<IEnumerable<UserRoleDto>> GetAllAsync()
+        {
+            var user_roles = await _context.UserRoles
+               .Include(ur => ur.FkUser).ThenInclude(u => u.FkClient)
+               .Include(ur => ur.FkRole)
+               .Select(ur => new UserRoleDto
+               {
+                   UserRoleId = ur.UserRoleId,
+                   FkUserId = ur.FkUserId,
+                   UserName = ur.FkUser.UserName,
+                   UserEmail = ur.FkUser.UserEmail,
+                   FkRoleId = ur.FkRoleId,
+                   RoleName = ur.FkRole.RoleName
+               }).ToListAsync();
+
+            return user_roles;
+        }
 
         public async Task<IEnumerable<UserRoleDto>> GetByUserIdAsync(int userId) =>
             await _context.UserRoles
@@ -60,7 +64,8 @@ namespace CustomerManagementSystemAPI.Data.Repository
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<IEnumerable<UserListDto>> GetAllUsersWithRolesAsync() => await _context.Users
+        public async Task<IEnumerable<UserListDto>> GetAllUsersWithRolesAsync() => 
+            await _context.Users
           .Include(u => u.UserRoles).ThenInclude(ur => ur.FkRole)
           .Include(u => u.FkClient)
           .Select(u => new UserListDto

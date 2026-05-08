@@ -1,4 +1,4 @@
-﻿namespace CustomerManagementSystemAPI.Models.DTO
+﻿namespace CustomerManagementSystemUI.Models.DTO
 {
     public class RoleDto
     {

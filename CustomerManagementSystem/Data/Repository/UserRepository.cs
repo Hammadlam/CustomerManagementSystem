@@ -19,6 +19,7 @@ namespace CustomerManagementSystemAPI.Data.Repository
         {
             return await _context.Users.FindAsync(id);
         }
+
         public async Task AddUserAsync(User user)
         {
             _context.Users.Add(user);
@@ -35,12 +36,18 @@ namespace CustomerManagementSystemAPI.Data.Repository
             _context.Logins.Add(login);
             await _context.SaveChangesAsync();                          
         }
-        public async Task<Login?> GetUserByEmailAndPasswordAsync(string email, string password)
+        //public async Task<Login?> GetUserByEmailAndPasswordAsync(string email, string password)
+        //{
+        //    return await _context.Logins
+        //        .FirstOrDefaultAsync(u => u.UserEmail == email && u.Password == password);
+        //}
+        public async Task<User?> GetUserWithRolesAsync(string email, string password)
         {
-            return await _context.Logins
+            return await _context.Users
+                .Include(u => u.UserRoles)
+                .ThenInclude(ur => ur.FkRole)
                 .FirstOrDefaultAsync(u => u.UserEmail == email && u.Password == password);
         }
- 
         public async Task UpdateUserAsync(User user)
         {
             _context.Users.Update(user);

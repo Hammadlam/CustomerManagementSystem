@@ -10,5 +10,7 @@ public class LoginResponse
     public string token { get; set; }
     public int FkuserId { get; set; }
     public int LoginId { get; set; }
+    public int userId { get; set; }
+    public List<string> roles { get; set; } = new();
 }
 

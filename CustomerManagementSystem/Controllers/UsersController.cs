@@ -1,6 +1,7 @@
 ﻿using CustomerManagementSystemAPI.Data.IRepository;
 using CustomerManagementSystemAPI.Helpers;
 using CustomerManagementSystemAPI.Models;
+using CustomerManagementSystemAPI.Models.DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -53,7 +54,7 @@ namespace CustomerManagementSystemAPI.Controllers
             return Ok(new { message = "User updated successfully" });
         }
 
-        // DELETE: api/users/delete/{id}
+        // DELETE: api/users/delete/{id}        
         [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
@@ -61,26 +62,28 @@ namespace CustomerManagementSystemAPI.Controllers
             return Ok(new { message = "User deleted successfully" });
         }
 
-        // POST: api/users/login-log
-        //[HttpPost("login-log")]
-        //public async Task<IActionResult> AddLogin([FromBody] Login login)
-        //{
-        //    await _userRepository.AddLoginAsync(login);
-        //    return Ok(new { message = "Login record added successfully" });
-        //}
+      
         [HttpPost("login-log")]
-        public async Task<IActionResult> AddLogin([FromBody] Login login, [FromServices] TokenGenerator tokenGen)
+        public async Task<IActionResult> AddLogin([FromBody] LoginDto login, [FromServices] TokenGenerator tokenGen)
         {
             if (string.IsNullOrEmpty(login.UserEmail) || string.IsNullOrEmpty(login.Password))
                 return BadRequest(new { message = "Email and password are required" });
 
-            // 🔍 Lookup user from User table based on email + password
-            var matchedLogin = await _userRepository.GetUserByEmailAndPasswordAsync(login.UserEmail, login.Password);
 
-            if (matchedLogin == null)
+            var user = await _userRepository.GetUserWithRolesAsync(login.UserEmail, login.Password);
+            // 🔍 Lookup user from User table based on email + password  
+            //var matchedLogin = await _userRepository.GetUserByEmailAndPasswordAsync(login.UserEmail, login.Password);
+            //if (user == null)
+            //if (matchedLogin == null)
+            //    return Unauthorized(new { success = false, message = "Invalid email or password" });
+            if (user == null)
                 return Unauthorized(new { success = false, message = "Invalid email or password" });
+            
+            var roles = user.UserRoles
+                    .Select(ur => ur.FkRole.RoleName)
+                    .ToList();
+            var token = tokenGen.GenerateJwtToken(user.UserEmail, user.UserId, roles);
 
-            var token = tokenGen.GenerateJwtToken(login.UserEmail, matchedLogin.FkuserId);
             // ✅ Match found: set FkUserId internally
             // login.FkuserId = matchedLogin.LoginId;
 
@@ -91,11 +94,11 @@ namespace CustomerManagementSystemAPI.Controllers
             {
                 success = true,
                 message = "Login successful",
-                token=token,
-                FkuserId = matchedLogin.FkuserId,
-                LoginId = matchedLogin.LoginId // send this if you want to use later
+                token = token,
+                userId = user.UserId,
+                roles = roles   
             });
-          }
+        }
 
 
     }
