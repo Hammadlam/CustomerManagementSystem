@@ -3,8 +3,8 @@
     public class AttendanceDto
     {
         public int AttendanceId { get; set; }
-        public int FkUserId { get; set; }
-        public string? UserName { get; set; }
+        public string FkEmployeeCode { get; set; }
+        public string? FullName { get; set; }
         public bool Present { get; set; }
         public bool Absent { get; set; }
         public DateTime? TimeIn { get; set; }

@@ -5,16 +5,21 @@ namespace CustomerManagementSystemAPI.Data.IRepository
 {
     public interface IAttendanceRepository
     {
-        Task<IEnumerable<AttendanceDto>> GetAllAttendanceAsync();
-        Task<List<AttendanceDto>> GetAttendanceByIdAsync(int id);
-        Task<OperationResult> AddAttendanceAsync(Attendance attendance);
+        Task<bool> MarkAttendanceAsync(AttendanceMarkDto dto);
 
-        Task<bool> UpdateAttendanceAsync(AttendanceDto dto);
+        Task<List<AttendanceListDto>> GetAttendanceListAsync();
 
-        Task<bool> DeleteAttendanceAsync(int id);
+        Task<List<MonthlyAttendanceDto>> GetMonthlyAttendanceAsync
+        (
+            int month,
+            int year
+        );
 
-        // For dropdown users list
-        Task<List<UserDropdownDto>> GetAllUsersAsync();
+        Task<AttendanceReportDto> GetAttendanceReportAsync
+        (
+            int month,
+            int year
+        );
     }
 
 }

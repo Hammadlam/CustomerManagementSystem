@@ -8,7 +8,7 @@ namespace CustomerManagementSystemAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin,SuperAdmin")]          // JWT role check
+    //[Authorize(Roles = "Admin,SuperAdmin")]          // JWT role check
     public class SuperAdminController : ControllerBase
     {
         private readonly IUserRoleRepository _repo;

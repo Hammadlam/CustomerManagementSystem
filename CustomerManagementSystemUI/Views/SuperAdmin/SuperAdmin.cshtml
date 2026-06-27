@@ -9,15 +9,20 @@
 <div class="container mt-4">
     <h2>Super Admin Dashboard</h2>
 
-    <!-- Assign Role -->
+    <!-- Assign Role & userId will be a disable field id will fill according to the selected user automatically-->
     <div class="row mb-3">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <input type="number" id="userId" class="form-control" placeholder="User ID" />
         </div>
-        <div class="col-md-4">
+        <!--Select Employee-->
+        <div class="col-md-3">
             <select id="roleSelect" class="form-control"></select>
         </div>
-        <div class="col-md-4">
+        <!--Select User role--> 
+        <div class="col-md-3">
+            <select id="roleSelect" class="form-control"></select>
+        </div>
+        <div class="col-md-3">
             <button class="btn btn-primary" onclick="assignRole()">Assign Role</button>
         </div>
     </div>
@@ -27,8 +32,10 @@
         <thead>
             <tr>
                 <th>User</th>
+                <th>Designation</th>
                 <th>Email</th>
                 <th>Roles</th>
+                <th>Edit</th>
             </tr>
         </thead>
         <tbody id="userTable"></tbody>

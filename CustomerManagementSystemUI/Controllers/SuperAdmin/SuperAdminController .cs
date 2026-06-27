@@ -3,21 +3,21 @@ using CustomerManagementSystemUI.Models.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CustomerManagementSystemUI.Controllers
+namespace CustomerManagementSystemUI.Controllers.SuperAdmin
 {
-    [Authorize(Roles = "SuperAdmin")]
-    public class SuperAdminConsumeController : Controller
+    //[Authorize(Roles = "SuperAdmin")]
+    public class SuperAdminController : Controller
     {
         private readonly IUserRoleRepository _repo;
         private readonly IRoleRepository _roleRepo;
 
-        public SuperAdminConsumeController(IUserRoleRepository repo,IRoleRepository roleRepo)
+        public SuperAdminController(IUserRoleRepository repo,IRoleRepository roleRepo)
         {
             _repo = repo;
             _roleRepo = roleRepo;
         }
 
-        public IActionResult Index()
+        public IActionResult SuperAdmin()
         {
             return View();
         }

@@ -64,8 +64,9 @@ namespace CustomerManagementSystemAPI.Data.Repository
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<IEnumerable<UserListDto>> GetAllUsersWithRolesAsync() => 
-            await _context.Users
+        public async Task<IEnumerable<UserListDto>> GetAllUsersWithRolesAsync()
+        {
+            var result = await _context.Users
           .Include(u => u.UserRoles).ThenInclude(ur => ur.FkRole)
           .Include(u => u.FkClient)
           .Select(u => new UserListDto
@@ -77,5 +78,7 @@ namespace CustomerManagementSystemAPI.Data.Repository
               ClientType = u.FkClient != null ? u.FkClient.ClientType : "N/A",
               Roles = u.UserRoles.Select(ur => ur.FkRole.RoleName).ToList()
           }).ToListAsync();
-    }
+            return result;
+        }
+}
 }

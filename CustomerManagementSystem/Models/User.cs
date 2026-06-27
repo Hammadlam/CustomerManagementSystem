@@ -27,7 +27,9 @@ public partial class User
 
     public int? FkClientId { get; set; }
 
-    public virtual ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
+    public bool IsSuperAdmin { get; set; }
+
+    public virtual Employee? Employee { get; set; }
 
     public virtual Client? FkClient { get; set; }
 

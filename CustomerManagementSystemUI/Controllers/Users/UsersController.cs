@@ -97,21 +97,32 @@ namespace CustomerManagementSystemUI.Controllers.Users
 
                     if (result != null && result.success)
                     {
-                        // ── Session save ────────────────────────────
                         HttpContext.Session.SetString("JWToken", result.token);
                         HttpContext.Session.SetInt32("UserId", result.userId);
-                        HttpContext.Session.SetString("Roles",
-                            JsonConvert.SerializeObject(result.roles));
 
-                        // ── Role ke hisaab se redirect ──────────────
                         string redirectUrl;
+                        string assignedRole;
 
-                        if (result.roles.Contains("SuperAdmin"))
-                            redirectUrl = Url.Action("SuperAdmin", "Dashboard");
-                        else if (result.roles.Contains("Admin"))
-                            redirectUrl = Url.Action("Admin", "Dashboard");
-                        else
-                            redirectUrl = Url.Action("Index", "Home");
+                        bool isAdmin = result.roles != null && result.roles.Contains("Admin");
+                        bool isSuperAdmin = result.roles != null && result.roles.Contains("SuperAdmin");
+
+                        if (isAdmin && !isSuperAdmin)                          // IsAdmin = 1, IsSuperAdmin=0
+                        {
+                            assignedRole = string.Join(",", result.roles);
+                            redirectUrl = Url.Action("Admin", "Admin");
+                        }
+                        else if (isSuperAdmin && !isAdmin)  // IsAdmin=0, IsSuperAdmin=1
+                        {
+                            assignedRole = string.Join(",", result.roles);
+                            redirectUrl = Url.Action("SuperAdmin", "SuperAdmin");
+                        }
+                        else        // both false for normal user
+                        {
+                            assignedRole = string.Join(",", result.roles);
+                             redirectUrl = Url.Action("Home", "Home");
+                        }
+
+                        HttpContext.Session.SetString("Role", assignedRole);
 
                         return Json(new
                         {

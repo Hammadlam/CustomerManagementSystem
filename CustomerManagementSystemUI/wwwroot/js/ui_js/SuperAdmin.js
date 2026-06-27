@@ -33,7 +33,7 @@ function assignRole() {
     };
 
     $.ajax({
-        url: '/SuperAdminConsume/AssignRole',
+        url: '/SuperAdmin/AssignRole',
         method: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(dto),

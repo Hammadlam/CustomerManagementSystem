@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\Dashboard\**" />
+    <Content Remove="Controllers\Dashboard\**" />
+    <EmbeddedResource Remove="Controllers\Dashboard\**" />
+    <None Remove="Controllers\Dashboard\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="wwwroot\js\ui_js\EmployeeAttendance.js" />
     <None Include="wwwroot\js\ui_js\Home.js" />
     <None Include="wwwroot\js\ui_js\Users.js" />

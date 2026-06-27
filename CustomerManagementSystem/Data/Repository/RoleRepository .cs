@@ -14,14 +14,17 @@ namespace CustomerManagementSystemAPI.Data.Repository
         }
         //public async Task<IEnumerable<RoleDto>> GetAllAsync() =>
         //  await _context.Roles.ToListAsync();
-        public async Task<IEnumerable<RoleDto>> GetAllAsync() =>
-    await _context.Roles
-        .Select(r => new RoleDto
+        public async Task<IEnumerable<RoleDto>> GetAllAsync() 
+            {
+            var result= await _context.Roles.Select(r => new RoleDto
         {
             RoleId = r.RoleId,
             RoleName = r.RoleName,
             // map other properties...
-        })
-        .ToListAsync();
+        }).ToListAsync();
+
+        
+            return result;
+        }
     }
 }

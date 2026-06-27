@@ -16,7 +16,7 @@ namespace CustomerManagementSystemUI.Data.Repository
         {
             var client = _api.CreateClient();
             var response = await client.GetAsync("admin/dashboard");
-            return await response.Content.ReadAsStringAsync();
+            return await response.Content.ReadAsStringAsync(); 
         }
     }
 }

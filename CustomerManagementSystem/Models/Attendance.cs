@@ -7,7 +7,9 @@ public partial class Attendance
 {
     public int AttendanceId { get; set; }
 
-    public int FkUserId { get; set; }
+    public string FkEmployeeCode { get; set; } = null!;
+
+    public DateTime? AttendanceDate { get; set; }
 
     public bool Present { get; set; }
 
@@ -29,7 +31,5 @@ public partial class Attendance
 
     public int? UpdatedBy { get; set; }
 
-    public DateTime? AttendanceDate { get; set; }
-
-    public virtual User FkUser { get; set; } = null!;
+    public virtual Employee FkEmployeeCodeNavigation { get; set; } = null!;
 }
